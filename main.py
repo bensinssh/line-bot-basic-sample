@@ -19,7 +19,7 @@ def index():
 @app.route('/push_sample')
 def push_sample():
     """プッシュメッセージを送る"""
-    user_id = os.environ['USER_ID']
+    user_id = os.environ['Uc61951ca6874dac8f0ec611c59923489']
     line_bot_api.push_message(user_id, TextSendMessage(text='Hello World!'))
 
     return 'OK'
