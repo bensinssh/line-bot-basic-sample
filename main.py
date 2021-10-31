@@ -24,10 +24,11 @@ def push_sample():
     return 'OK'
 
 #=============[ Mod by Ben ]​===============#
-====#=========[ NOTE SAVER ]================
+#=============[ NOTE SAVER ]================
 notes = {}
 
 # Post Request
+
 @app.route("/callback", methods=['POST'])
 def callback():
     signature = request.headers['X-Line-Signature']
