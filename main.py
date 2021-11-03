@@ -14,31 +14,42 @@ handler = WebhookHandler(os.environ['CHANNEL_SECRET'])
 def index():
     return 'You call index()'
 
-
-@app.route('/push_sample')
-def push_sample():
-    """プッシュメッセージを送る"""
-    user_id = os.environ["USER_ID"]
-    line_bot_api.push_message(user_id, TextSendMessage(text='Hello World!'))
-
-    return 'OK'
-
 #=============[ Mod by Ben ]​===============#
 #=============[ NOTE SAVER ]================
-notes = {}
 
 # Post Request
 
 @app.route("/callback", methods=['POST'])
 def callback():
-    signature = request.headers['X-Line-Signature']
     body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
-    try:
-        handler.handle(body, signature)
-    except InvalidSignatureError:
-        abort(400)
+    # print(body)
+    req = request.get_json(silent=True, force=True)
+    intent = req["queryResult"]["intent"]["displayName"]
+    text = req['originalDetectIntentRequest']['payload']['data']['message']['text']
+    reply_token = req['originalDetectIntentRequest']['payload']['data']['replyToken']
+    id = req['originalDetectIntentRequest']['payload']['data']['source']['userId']
+    disname = line_bot_api.get_profile(id).display_name
+
+    print('id = ' + id)
+    print('name = ' + disname)
+    print('text = ' + text)
+    print('intent = ' + intent)
+    print('reply_token = ' + reply_token)
+
+    reply(intent,text,reply_token,id,disname)
+
     return 'OK'
+
+
+def reply(intent,text,reply_token,id,disname):
+    if intent == 'intent 5':
+        text_message = TextSendMessage(text='ทดสอบสำเร็จ')
+        line_bot_api.reply_message(reply_token,text_message)
+
+if __name__ == "__main__":
+    app.run()
+
+
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
